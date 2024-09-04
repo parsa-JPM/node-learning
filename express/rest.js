@@ -1,5 +1,7 @@
 import chalk from 'chalk';
 import express from 'express';
+// notice that we have to write suffix
+import logger from './logger.js';
 
 const app = express();
 
@@ -19,20 +21,37 @@ const products = [
     },
 ];
 
+// add middleware to all endpoints that defined after this line
+app.use(logger);
+
+// working with query param
+// notice that we have to put this endpoint in first of file
+app.get("/search", (req, res) => {
+    // shallow cody of prodcts
+    let p = [...products];
+    const { name } = req.query;
+    if (name) {
+        p = p.filter((p) => p.name.includes(name))
+    }
+
+    return res.json(p);
+})
+
 // get product list
 app.get('/', (req, res) => {
-    res.json(products);
+    return res.json(products);
 });
 
-// get single product
+// get single product using query param
 app.get("/:productId", (req, res) => {
     const { productId } = req.params;
     const product = products.find((p) => p.id === Number(productId));
     if (!product) {
-        res.status(404).send("not found");
+        return res.status(404).send("not found");
     }
-    res.json(product)
-})
+
+    return res.json(product)
+});
 
 app.listen(3000, () => {
     console.log(`server is running ${chalk.green('on port 3000')}`);
