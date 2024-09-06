@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import express from 'express';
 // notice that we have to write suffix
 import logger from './logger.js';
+import nameEndpoints from './route/name.js'
 
 const app = express();
 
@@ -56,18 +57,8 @@ app.get("/:productId", (req, res) => {
 // it's mandetory to parse json in res body
 app.use(express.json());
 
-app.post("/api/test", (req, res) => {
-    const { name, family } = req.body;
-    console.log(req.body);
-
-    if (name !== 'parsa') {
-        return res
-            .status(405)
-            .json({ 'error': 'name is wrong' })
-    } else {
-        return res.status(201).json({ 'msg': 'success' })
-    }
-});
+// used route to register group of routes
+app.use("/", nameEndpoints);
 
 
 
