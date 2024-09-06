@@ -53,6 +53,24 @@ app.get("/:productId", (req, res) => {
     return res.json(product)
 });
 
+// it's mandetory to parse json in res body
+app.use(express.json());
+
+app.post("/api/test", (req, res) => {
+    const { name, family } = req.body;
+    console.log(req.body);
+
+    if (name !== 'parsa') {
+        return res
+            .status(405)
+            .json({ 'error': 'name is wrong' })
+    } else {
+        return res.status(201).json({ 'msg': 'success' })
+    }
+});
+
+
+
 app.listen(3000, () => {
     console.log(`server is running ${chalk.green('on port 3000')}`);
 })
